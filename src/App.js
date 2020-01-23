@@ -16,15 +16,9 @@ const App = () => {
     <div className="App">
       <Router>
         <Switch>
-          <Route exact path="/">
-            <SearchPage />
-          </Route>
-          <Route exact path="/variables">
-            <ShowFoundCar />
-          </Route>
-          <Route path="/variables/:variable">
-            <ShowSpecificData />
-          </Route>
+          <Route exact path="/" component={SearchPage}/>
+          <Route exact path="/variables" component={ShowFoundCar}/>
+          <Route path="/variables/:variable" component={ShowSpecificData}/>
         </Switch>
       </Router>
     </div>
