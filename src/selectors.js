@@ -1,8 +1,8 @@
 export const isValidSearchField = value => {
-  const allowdCharactersOnly = /^[0-9A-Za-z!@#$%&*()_\-+={[}\]|\:;"'<,>.?\/\\~`]+[0-9A-Za-z!@#$%&*()_\-+={[}\]|\:;"'<,>.?\/\\~`]*$/g;
+  const allowdCharactersOnly = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 
   return (value === '') ? 'Value must not be empty!' : 
-    // (allowdCharactersOnly.test(value)) ? 'Only latin and numbers are allowed!' :
+    (allowdCharactersOnly.test(value)) ? 'Only latin and numbers are allowed!' :
     (value.length < 17) ? 'minimum number of characters 17' : '';
 }
 

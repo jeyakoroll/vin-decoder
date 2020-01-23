@@ -34,6 +34,7 @@ const SearchPage = () => {
     // check, filter and save codes below
     setLastCodes(checkSavedCodes(value, lastCodes));
     localStorage.setItem('codes', checkSavedCodes(value, lastCodes).join(", "));
+    // get and save DATA to store and to localStorage
     setSpin(true);
     const carBaseData = await axios.get(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${value}?format=json`);
     

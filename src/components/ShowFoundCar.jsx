@@ -4,15 +4,14 @@ import { Link, useHistory } from "react-router-dom";
 import Context from '../context';
 
 const ShowFoundCar = () => {
-  const [size, setSize] = useState('default');
   const { state: { carData } } = useContext(Context);
+  const [size, setSize] = useState('default');
   const history = useHistory();
 
   useEffect(() => {
-    if ( Object.entries(carData).length === 0 && carData.constructor === Object ) {
-      // history.push('/');
+    if ( carData.length === 0 ) {
+      history.push('/');
     }
-    console.log('state', carData)
   }, []);
 
   const handleSize = ev => setSize(ev.target.value);
@@ -37,7 +36,13 @@ const ShowFoundCar = () => {
           column={2} 
           size={size}
         >
-          <Descriptions.Item label={car.Variable}>{car.Value}</Descriptions.Item>
+          <Descriptions.Item 
+            label={
+              <Link to={`/variables/${car.VariableId}`}>
+                {car.Variable}
+              </Link>
+            }
+          >{car.Value}</Descriptions.Item>
         </Descriptions>
       ))}
     </div>
