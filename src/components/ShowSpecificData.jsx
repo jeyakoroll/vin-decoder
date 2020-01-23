@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Descriptions, Radio, Button, Icon } from 'antd';
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import find from 'lodash/find';
-import Context from '../context';
 
 const ShowSpecificData = () => {
-  const { state } = useContext(Context);
   const [size, setSize] = useState('default');
   const [variableDescr, setVariableDeskr] = useState("");
   const { variable } = useParams();

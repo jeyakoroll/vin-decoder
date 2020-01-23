@@ -14,10 +14,6 @@
   left: -10px;
 }
 
-.search__box-input {
-  
-}
-
 .search__box-items {
   display: flex;
   flex-flow: column wrap;
