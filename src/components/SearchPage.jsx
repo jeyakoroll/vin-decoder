@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import { Input, Drawer, List, Divider, Col, Row, Spin } from 'antd';
-import axios from 'axios';
-import _ from 'lodash';
 
 import DescriptionItem from './DescriptionItem';
 import Context from '../context';
 import { isValidSearchField, checkSavedCodes, deleteUnsavedProp } from '../selectors';
+import { reuqestAllResults } from '../api';
 const { Search } = Input;
 
 const SearchPage = () => {
@@ -36,17 +35,13 @@ const SearchPage = () => {
     localStorage.setItem('codes', checkSavedCodes(value, lastCodes).join(", "));
     // get and save DATA to store and to localStorage
     setSpin(true);
-    const carBaseData = await axios.get(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${value}?format=json`);
-    
-    const { data: { Results } } = carBaseData;
-    const onlyResultsWithValue = Results.filter(obj => (obj.Value !== null && obj.Value !== ""));
-    // put to arr only obj with VARIABLE, VALUE and ID property
-    const sortedResults = _.chain(onlyResultsWithValue).filter('Variable' && 'Value' && 'VariableId').map(el => _.pick(el, 'Variable', 'Value', 'VariableId')).value();
-    const storageCarData = {[value]: sortedResults};
+
+    const onlyResultsWithValue = await reuqestAllResults(`/api/vehicles/decodevin/${value}?format=json`);
+    const storageCarData = {[value]: onlyResultsWithValue};
   
     setCarData({...storageCarData, ...deleteUnsavedProp(lastCodes, carData)});
     localStorage.setItem("codesData", JSON.stringify({...storageCarData, ...carData}));
-    dispatch({type: "SAVE_DATA_OF_CAR", payload: sortedResults});
+    dispatch({type: "SAVE_DATA_OF_CAR", payload: onlyResultsWithValue});
 
     setSpin(false);
     history.push("/variables");
@@ -74,9 +69,9 @@ const SearchPage = () => {
         <List
           dataSource={lastCodes}
           bordered
-          renderItem={code => (
+          renderItem={(code, key) => (
             <List.Item
-              key={code}
+              key={code+key}
               actions={[
                 <a onClick={() => showDrawer(code)}>
                   View Base Data
@@ -86,10 +81,7 @@ const SearchPage = () => {
               <List.Item.Meta
                 title={
                   <Link 
-                    onClick={ev => {
-                      ev.persist();
-                      handleSearch(ev.target.text)
-                    }}
+                    onClick={() => handleSearch(code.trim())}
                     to="/" 
                     className="searchable-item"
                   >

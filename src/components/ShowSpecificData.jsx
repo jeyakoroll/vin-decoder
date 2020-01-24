@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Descriptions, Radio, Button, Icon } from 'antd';
 import { Link, useParams } from "react-router-dom";
-import axios from 'axios';
-import find from 'lodash/find';
+import { requestSelectedVariable } from '../api';
 
 const ShowSpecificData = () => {
   const [size, setSize] = useState('default');
@@ -14,12 +13,13 @@ const ShowSpecificData = () => {
   }, [])
 
   const getSpecificDataOfVariable = async () => {
-    const {data: {Results}} = await axios.get(`https://vpic.nhtsa.dot.gov/api/vehicles/getvehiclevariablelist?format=json`);
-    const getSpecificData = find(Results, {ID: parseInt(variable)});
+    const getSpecificData = await requestSelectedVariable(`/api/vehicles/getvehiclevariablelist?format=json`, variable);
+
     if (getSpecificData === undefined) {
       setVariableDeskr('There is no description for this variable!');
       return;
     };
+    
     setVariableDeskr(getSpecificData.Description);
   }
 
