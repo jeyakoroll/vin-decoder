@@ -44,6 +44,12 @@ const SearchPage = () => {
     const sortedResults = _.chain(onlyResultsWithValue).filter('Variable' && 'Value' && 'VariableId').map(el => _.pick(el, 'Variable', 'Value', 'VariableId')).value();
     const storageCarData = {[value]: sortedResults};
   
+    // Мутирование объекта carData это скользкий момент.
+    // Чтобы понять, что в localStorage записывается изменённый carData,
+    // надо _знать_ что в функции deleteUnsavedProp происходит удаление свойств.
+    //
+    // Создание нового объекта с отфильтрованными свойствами
+    // и запись его в state и localStorage выглядела бы понятнее.
     setCarData({...storageCarData, ...deleteUnsavedProp(lastCodes, carData)});
     localStorage.setItem("codesData", JSON.stringify({...storageCarData, ...carData}));
     dispatch({type: "SAVE_DATA_OF_CAR", payload: sortedResults});
@@ -87,6 +93,13 @@ const SearchPage = () => {
                 title={
                   <Link 
                     onClick={ev => {
+                      // А нужен ли здесь persist?
+                      // Если бы мы где-то сохраняли ссылку на событие,
+                      // чтобы в асинхронном обработчике иметь доступ к значениям его полей, то да.
+                      // Но здесь мы совершенно синхронно читаем ev.target.text,
+                      // после чего объект события нас не интересует.
+                      //
+                      // Хотя можно было бы просто вызвать handleSearch(code);
                       ev.persist();
                       handleSearch(ev.target.text)
                     }}

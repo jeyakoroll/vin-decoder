@@ -14,6 +14,9 @@ const ShowSpecificData = () => {
   }, [])
 
   const getSpecificDataOfVariable = async () => {
+    // Всё-таки хотелось бы видеть отдельный модуль по работе с API.
+    // Небольшой модуль с парой методов для запросов к vpic.nhtsa.dot.gov,
+    // было бы проще понять какие внешние ресурсы использует наше приложение.
     const {data: {Results}} = await axios.get(`https://vpic.nhtsa.dot.gov/api/vehicles/getvehiclevariablelist?format=json`);
     const getSpecificData = find(Results, {ID: parseInt(variable)});
     if (getSpecificData === undefined) {
